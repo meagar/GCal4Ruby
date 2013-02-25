@@ -313,8 +313,13 @@ module GCal4Ruby
           when 'content'
             @content = ele.text
           when "when"
-            @start_time = Time.parse(ele.attributes['startTime'])
-            @end_time = Time.parse(ele.attributes['endTime'])
+            begin
+              @start_time = Time.parse(ele.attributes['startTime'])
+              @end_time = Time.parse(ele.attributes['endTime'])
+            rescue ArgumentError => e
+              puts ele.inspect
+              @start_time = @end_time = nil
+            end
             @all_day = !ele.attributes['startTime'].include?('T')
             @reminder = []
             ele.elements.each("gd:reminder") do |r|
